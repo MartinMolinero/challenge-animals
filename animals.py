@@ -1,4 +1,5 @@
 from sklearn import svm
+from sklearn.neural_network import MLPClassifier
 
 predicate_matrix_file  = open('AwA-base/Animals_with_Attributes/predicate-matrix-binary.txt','r')
 train_classes_file = open('AwA-base/Animals_with_Attributes/classes.txt', 'r')
@@ -55,3 +56,7 @@ def main():
 
     do_for_svm(x_array, class_numbers)
     do_for_neural_networks(x_array, class_numbers)
+
+if __name__ == "__main__":
+    # execute only if run as a script
+    main()
