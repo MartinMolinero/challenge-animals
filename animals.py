@@ -6,9 +6,9 @@ train_classes_file = open('AwA-base/Animals_with_Attributes/classes.txt', 'r')
 train_predicates = open('AwA-base/Animals_with_Attributes/train_predicates.txt', 'r')
 
 tuples = predicate_matrix_file.readlines()
-#print(tuples)
+print(tuples)
 classes = train_classes_file.readlines()
-#print(classes)
+print(classes)
 
 def do_for_neural_networks(x_array, class_numbers):
     clf = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(5, 2), random_state=1)
@@ -60,3 +60,6 @@ def main():
 if __name__ == "__main__":
     # execute only if run as a script
     main()
+    predicate_matrix_file.close() 
+    train_classes_file.close()
+    train_predicates.close()
