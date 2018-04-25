@@ -21,17 +21,10 @@ para entrenarse usa el metodo fit, ese metodo recibe en x los data samples de tr
 y en y las diferentes clases en las que puede clasificar al parecer.
 '''
 
-def do_for_neural_networks(x_array, class_numbers):
+def do_for_neural_networks(X_train, Y_train, X_test):
     clf = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(5, 2), random_state=1)
-    clf.fit(x_array, class_numbers)
-    test = []
-    t_array = []
-    for s in test:
-        s =s.rstrip()
-        s = s.split(' ')
-        t_array.append(s)
-    print(clf.predict(t_array))
-    pass
+    clf.fit(X_train, Y_train)
+    print("Neural Network (lbfgs): ", clf.predict(X_test))
 
 
 def do_for_random_forest_tree():
@@ -172,13 +165,14 @@ def main():
 
     print("Expected result:")
     print(Y_test)
-    print("Actual result:")
+    print("Actual results:\n")
     if len(indexes) == 1:
         do_for_svm(matrix, Y_train, X_test)
     else:
         do_for_svm(matrix, Y_train, X_test, False)
 
-    #do_for_neural_networks(matrix, class_numbers)
+    print()
+    do_for_neural_networks(matrix, Y_train, X_test)
 
 if __name__ == "__main__":
     # execute only if run as a script
