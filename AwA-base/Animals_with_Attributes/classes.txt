@@ -1,5 +1,5 @@
 1 antelope
-2 grizzly
+2 grizzly+bear
 3 killer+whale
 4 beaver
 5 dalmatian
