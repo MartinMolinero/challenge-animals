@@ -73,6 +73,7 @@ def fill_until_limit(low, high):
 def do_limits_for_case(group):
     low = 0
     high = 0
+    print("Group", group)
     if group == 1: # strong?
         low = 41
         high = 41
@@ -82,7 +83,7 @@ def do_limits_for_case(group):
     if group == 3: # black?
         low = 0
         high = 0
-    if group == 4: # ocean? 
+    if group == 4: # ocean?
         low = 73
         high = 73
     if group == 5: # smart?
@@ -93,7 +94,7 @@ def do_limits_for_case(group):
         high = 84
     if group == 7: # color
         low = 0
-        high = 7 
+        high = 7
     if group == 8: # fly?
         low = 34
         high = 34
@@ -103,7 +104,7 @@ def do_limits_for_case(group):
     if group == 10: # thoughskin
         low = 13
         high = 13
-    
+
     indexes = fill_until_limit(low, high)
     return indexes
 
@@ -139,7 +140,10 @@ def main():
 
     training_set = filter_by_class_name(matrix, class_names, training_class_data)
     test_set = filter_by_class_name(matrix, class_names, test_class_data)
-    indexes = do_limits_for_case(5)    # We should ask for this as user input
+    string = "1"
+    print("Select the option you want to know from your animals")
+    colors = "\n\t black\n\t white\n\t blue\n\t brown\n\t gray\n\t orange\n\t red\n\t yellow"
+    indexes = do_limits_for_case(int(input("\n1 Are they strong? \n 2 Do they eat meat? \n3 Are they black? \n4 Do they live in the ocean? \n5 Are they smart? \n 6 Are they domestic?\n 7 Do they have one of the following colors?"+ colors +  "\n 8  Are they fast?\n 9 Do they have tough skin?\n\n")))    # We should ask for this as user input
 
     matrix = []
     Y_train = []
@@ -177,7 +181,7 @@ def main():
 if __name__ == "__main__":
     # execute only if run as a script
     main()
-    predicate_matrix_file.close()  
+    predicate_matrix_file.close()
     all_classes_file.close()
     train_classes_file.close()
     test_classes_file.close()
