@@ -1,6 +1,7 @@
 from sklearn import svm
 from sklearn.neural_network import MLPClassifier
 import numpy as np
+from prettytable import PrettyTable
 
 predicate_matrix_file  = open('AwA-base/Animals_with_Attributes/predicate-matrix-binary.txt','r')
 all_classes_file = open('AwA-base/Animals_with_Attributes/classes.txt', 'r')
@@ -24,7 +25,9 @@ y en y las diferentes clases en las que puede clasificar al parecer.
 def do_for_neural_networks(X_train, Y_train, X_test):
     clf = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(5, 2), random_state=1)
     clf.fit(X_train, Y_train)
-    print("Neural Network (lbfgs): ", clf.predict(X_test))
+    neural =  clf.predict(X_test)
+    return neural
+
 
 
 def do_for_random_forest_tree():
@@ -33,14 +36,19 @@ def do_for_random_forest_tree():
 def do_for_svm(X_train, Y_train, X_test, nu=True):
     clf = svm.LinearSVC()
     clf.fit(X_train, Y_train)
-    print("Linear SVC: ", clf.predict(X_test))
+    linearSvc = clf.predict(X_test)
+
     clf = svm.SVC()
     clf.fit(X_train, Y_train)
-    print("SVC: ", clf.predict(X_test))
+    svc = clf.predict(X_test)
+
     if nu:
         clf = svm.NuSVC()
         clf.fit(X_train, Y_train)
-        print("NuSVC: ", clf.predict(X_test))
+        nuSvc = clf.predict(X_test)
+        return linearSvc, svc, nuSvc
+    else:
+        return linearSvc, svc
 
 def filter_by_class_name(matrix, class_names, dataset):
     result_array = []
@@ -108,7 +116,78 @@ def do_limits_for_case(group):
     indexes = fill_until_limit(low, high)
     return indexes
 
+def get_percentage(expected, result):
+    eq = 0
+    for i in range(len(expected)):
+        if expected[i] == result[i]:
+            eq += 1
 
+    per = eq * 100 / len(expected)
+    return per
+
+def get_percentage_each(expected, result):
+    eq = 0
+    for i in range(len(expected)):
+        for j in range(len(expected[i])):
+            if expected[i][j] == result[i][j]:
+                eq += 1
+
+    per = eq * 100 / (len(expected)*len(expected[0]))
+    return per
+
+def convert_to_animals(arr, animals, indexes):
+    if len(indexes) == 1:
+        table = PrettyTable(['Animal', 'Predicate'])
+        for i in range(len(arr)):
+            row = []
+            if arr[i] == 1:
+                row.append(animals[i].rstrip())
+                row.append("YES")
+            else:
+                row.append(animals[i].rstrip())
+                row.append("NO")
+            table.add_row(row)
+    else:
+        table = PrettyTable(['Animal', 'Predicate1', 'Predicate2', 'Predicate3', 'Predicate4', 'Predicate5', 'Predicate6', 'Predicate7', 'Predicate8'])
+
+        for i in range(len(animals)):
+            row = []
+            row.append(animals[i].rstrip())
+            for j in range(len(arr[i])):
+                if arr[i][j] == '1':
+                    row.append("YES")
+                elif arr[i][j] == '0':
+                    row.append("NO")
+            table.add_row(row)
+    print(table)
+
+def convert_to_animals_results(animals, linearSvc, svc, nuSvc, neural, perLinear, perSvc, perNuSvc, perNeural):
+    table = PrettyTable(['Animal', 'LinearSVC', 'SVC', 'NuSVC', 'Neural'])
+
+    for i in range(len(animals)):
+        row = []
+        row.append(animals[i].rstrip())
+        if linearSvc[i] == 1:
+            row.append("YES")
+        elif linearSvc[i] == 0:
+            row.append("NO")
+        if svc[i] == 1:
+            row.append("YES")
+        elif svc[i] == 0:
+            row.append("NO")
+        if nuSvc[i] == 1:
+            row.append("YES")
+        elif nuSvc[i] == 0:
+            row.append("NO")
+        if neural[i] == 1:
+            row.append("YES")
+        elif neural[i] == 0:
+            row.append("NO")
+        table.add_row(row)
+    percentage = []
+    percentage.extend(("PERCENTAGE", perLinear, perSvc, perNuSvc, perNeural))
+    table.add_row(percentage)
+    print(table)
 
 def main():
     matrix = []
@@ -143,7 +222,7 @@ def main():
     string = "1"
     print("Select the option you want to know from your animals")
     colors = "\n\t black\n\t white\n\t blue\n\t brown\n\t gray\n\t orange\n\t red\n\t yellow"
-    indexes = do_limits_for_case(int(input("\n1 Are they strong? \n 2 Do they eat meat? \n3 Are they black? \n4 Do they live in the ocean? \n5 Are they smart? \n 6 Are they domestic?\n 7 Do they have one of the following colors?"+ colors +  "\n 8  Are they fast?\n 9 Do they have tough skin?\n\n")))    # We should ask for this as user input
+    indexes = do_limits_for_case(int(input("\n1 Are they strong? \n2 Do they eat meat? \n3 Are they black? \n4 Do they live in the ocean? \n5 Are they smart? \n6 Are they domestic?\n7 Do they have one of the following colors?"+ colors +  "\n8  Are they fast?\n9 Do they have tough skin?\n\n")))    # We should ask for this as user input
 
     matrix = []
     Y_train = []
@@ -169,14 +248,29 @@ def main():
 
     print("Expected result:")
     print(Y_test)
+    convert_to_animals(Y_test, test_classes, indexes)
     print("Actual results:\n")
     if len(indexes) == 1:
-        do_for_svm(matrix, Y_train, X_test)
+        linearSvc, svc, nuSvc = do_for_svm(matrix, Y_train, X_test)
+        print("Linear SVC: ", linearSvc, get_percentage(Y_test, list(linearSvc)),"%")
+        print("SVC: ",svc, get_percentage(Y_test, list(svc)),"%")
+        print("NuSVC: ",nuSvc, get_percentage(Y_test, list(nuSvc)),"%")
+        neural = do_for_neural_networks(matrix, Y_train, X_test)
+        print("Neural Network (lbfgs): ", neural, get_percentage(Y_test, list(neural)),"%")
+        convert_to_animals_results(test_classes, list(linearSvc), list(svc), list(nuSvc), list(neural), get_percentage(Y_test, list(linearSvc)), get_percentage(Y_test, list(svc)), get_percentage(Y_test, list(nuSvc)), get_percentage(Y_test, list(neural)))
     else:
-        do_for_svm(matrix, Y_train, X_test, False)
+        linearSvc, svc = do_for_svm(matrix, Y_train, X_test, False)
+        print("Linear SVC: ", linearSvc, get_percentage_each(Y_test, list(linearSvc)),"%")
+        print("SVC: ",svc, get_percentage_each(Y_test, list(svc)),"%")
+        neural = do_for_neural_networks(matrix, Y_train, X_test)
+        print("Neural Network (lbfgs): ", neural, get_percentage_each(Y_test, list(neural)),"%")
+        print("Linear SVC")
+        convert_to_animals(linearSvc, test_classes, indexes)
+        print("SVC")
+        convert_to_animals(svc, test_classes, indexes)
+        print("Neural")
+        convert_to_animals(neural, test_classes, indexes)
 
-    print()
-    do_for_neural_networks(matrix, Y_train, X_test)
 
 if __name__ == "__main__":
     # execute only if run as a script
