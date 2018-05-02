@@ -103,15 +103,15 @@ def do_limits_for_case(group):
     if group == 7: # color
         low = 0
         high = 7
-    if group == 8: # fly?
-        low = 34
-        high = 34
-    if group == 9: # fast?
-        low = 39
-        high = 39
-    if group == 10: # thoughskin
-        low = 13
-        high = 13
+    if group == 8: # hunter?
+        low = 58
+        high = 58
+    if group == 9: # small?
+        low = 15
+        high = 15
+    if group == 10: # smelly
+        low = 33
+        high = 33
 
     indexes = fill_until_limit(low, high)
     return indexes
@@ -222,7 +222,7 @@ def main():
     string = "1"
     print("Select the option you want to know from your animals")
     colors = "\n\t black\n\t white\n\t blue\n\t brown\n\t gray\n\t orange\n\t red\n\t yellow"
-    indexes = do_limits_for_case(int(input("\n1 Are they strong? \n2 Do they eat meat? \n3 Are they black? \n4 Do they live in the ocean? \n5 Are they smart? \n6 Are they domestic?\n7 Do they have one of the following colors?"+ colors +  "\n8  Are they fast?\n9 Do they have tough skin?\n\n")))    # We should ask for this as user input
+    indexes = do_limits_for_case(int(input("\n1 Are they strong? \n2 Do they eat meat? \n3 Are they black? \n4 Do they live in the ocean? \n5 Are they smart? \n6 Are they domestic?\n7 Do they have one of the following colors?"+ colors +  "\n8 Are they hunters ?\n9 Is it small?\n10 Is it smelly?\n\n")))    # We should ask for this as user input
 
     matrix = []
     Y_train = []
